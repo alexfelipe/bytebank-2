@@ -22,7 +22,7 @@ class Dashboard extends StatelessWidget {
                 color: Colors.blue,
                 child: Image.asset(
                   'assets/bitcoin.jpg',
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                 ),
                 height: 300,
                 width: double.maxFinite,

@@ -30,6 +30,14 @@ class ListaFeatures extends StatelessWidget {
               icone: Icons.people,
               texto: 'Contatos',
             ),
+            FeatureItem(
+              icone: Icons.credit_card,
+              texto: 'Cartão de crédito',
+            ),
+            FeatureItem(
+              icone: Icons.help,
+              texto: 'Ajuda',
+            ),
           ],
         ),
       ),
