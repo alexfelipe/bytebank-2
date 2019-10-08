@@ -1,5 +1,8 @@
 import 'package:bytebank/components/features/lista.dart';
+import 'package:bytebank/screens/lista_transferencias.dart';
 import 'package:flutter/material.dart';
+
+import 'lista_contatos.dart';
 
 class Dashboard extends StatelessWidget {
   @override
@@ -25,10 +28,29 @@ class Dashboard extends StatelessWidget {
                 width: double.maxFinite,
               ),
             ),
-            ListaFeatures(),
+            ListaFeatures(
+              quandoClicaContatos: () => vaiParaListaContatos(context),
+              quandoClicaTransacoes: () => vaiParaListaTransferencias(context),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  vaiParaListaContatos(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) {
+        return ListaContatos();
+      },
+    ));
+  }
+
+  vaiParaListaTransferencias(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) {
+        return ListaTransferencias();
+      },
+    ));
   }
 }
