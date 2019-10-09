@@ -1,22 +1,30 @@
 import 'package:bytebank/models/transferencia.dart';
+import 'package:bytebank/webclient/transferencia_webclient.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 const _tituloAppBar = 'Transferências';
 
-class ListaTransferencias extends StatelessWidget {
+class ListaTransferencias extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return ListaTransferenciasState();
+  }
+}
+
+class ListaTransferenciasState extends State<ListaTransferencias> {
   final List<Transferencia> _transferencias = List();
 
-  ListaTransferencias() {
-    _transferencias.addAll(
-      List.generate(
-        10,
-        (i) => Transferencia(
-          Random().nextInt(999).toDouble(),
-          Random().nextInt(9999),
-        ),
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    buscaTodas();
+  }
+
+  void buscaTodas() async {
+    final transferenciasEncontradas = await TransferenciaWebClient().todas();
+    setState(() {
+      _transferencias.addAll(transferenciasEncontradas);
+    });
   }
 
   @override
@@ -47,7 +55,7 @@ class ItemTransferencia extends StatelessWidget {
         child: ListTile(
       leading: Icon(Icons.monetization_on),
       title: Text(_transferencia.valor.toString()),
-      subtitle: Text(_transferencia.numeroConta.toString()),
+      subtitle: Text(_transferencia.contato.nome),
     ));
   }
 }

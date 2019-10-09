@@ -1,16 +1,32 @@
+import 'package:bytebank/dao/ContatoDao.dart';
 import 'package:bytebank/models/contato.dart';
+import 'package:bytebank/screens/formulario_transferencia.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 import 'formulario_contato.dart';
 
-class ListaContatos extends StatelessWidget {
-  final List<Contato> contatos = List();
+class ListaContatos extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return ListaContatosState();
+  }
+}
 
-  ListaContatos() {
-    contatos.addAll(List<Contato>.generate(10, (i) {
-      return Contato("nome ${i + 1}", i);
-    }));
+class ListaContatosState extends State<ListaContatos> {
+  final List<Contato> contatos = List();
+  final ContatoDao dao = ContatoDao();
+
+  @override
+  void initState() {
+    super.initState();
+    buscaContatos();
+  }
+
+  Future buscaContatos() async {
+    final contatos = await dao.todos();
+    setState(() {
+      this.contatos.addAll(contatos);
+    });
   }
 
   @override
@@ -23,17 +39,26 @@ class ListaContatos extends StatelessWidget {
         itemCount: contatos.length,
         itemBuilder: (context, posicao) {
           final contato = contatos[posicao];
-          return Container(
-            height: 100,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(
-                child: ListTile(
-                  title: Text(
-                    contato.nome,
-                    style: TextStyle(fontSize: 24.0),
+          return InkWell(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) {
+                  return FormularioTransferencia(contato);
+                },
+              ));
+            },
+            child: Container(
+              height: 100,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Card(
+                  child: ListTile(
+                    title: Text(
+                      contato.nome,
+                      style: TextStyle(fontSize: 24.0),
+                    ),
+                    subtitle: Text('${contato.numeroConta}'),
                   ),
-                  subtitle: Text('${Random().nextInt(9999)}'),
                 ),
               ),
             ),
@@ -47,9 +72,20 @@ class ListaContatos extends StatelessWidget {
     );
   }
 
-  vaiParaFormulario(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
+  vaiParaFormulario(BuildContext context) async {
+    final int idContato = await Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => FormularioContato(),
     ));
+    if (idContato != null) {
+      setState(() {
+        atualiza();
+      });
+    }
+  }
+
+  Future atualiza() async {
+    contatos.clear();
+    final contatosNovos = await dao.todos();
+    contatos.addAll(contatosNovos);
   }
 }

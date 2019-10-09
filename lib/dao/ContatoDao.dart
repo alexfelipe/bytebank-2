@@ -5,11 +5,6 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ContatoDao {
-  void testaBanco() async {
-    insere(Contato('alex', 1000));
-    final contatos = await todos();
-    print('contatos: $contatos');
-  }
 
   Future<Database> abreBanco() async {
     return openDatabase(
