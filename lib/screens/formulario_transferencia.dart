@@ -4,25 +4,30 @@ import 'package:bytebank/webclient/transferencia_webclient.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+const _tituloAppBar = 'Nova transferência';
+
+const _rotuloCampoValor = 'Valor';
+const _tituloBotaoCriar = 'Transferir';
+
 class FormularioTransferencia extends StatefulWidget {
   final Contato _contato;
 
   @override
   State<StatefulWidget> createState() {
-    return FormularioTransferenciaState();
+    return _FormularioTransferenciaState();
   }
 
   FormularioTransferencia(this._contato);
 }
 
-class FormularioTransferenciaState extends State<FormularioTransferencia> {
+class _FormularioTransferenciaState extends State<FormularioTransferencia> {
   final TextEditingController _controlador = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nova transferência'),
+        title: Text(_tituloAppBar),
       ),
       body: Column(
         children: <Widget>[
@@ -49,7 +54,7 @@ class FormularioTransferenciaState extends State<FormularioTransferencia> {
               ),
               controller: _controlador,
               style: TextStyle(fontSize: 24.0),
-              decoration: InputDecoration(labelText: 'Valor'),
+              decoration: InputDecoration(labelText: _rotuloCampoValor),
             ),
           ),
           Padding(
@@ -57,12 +62,12 @@ class FormularioTransferenciaState extends State<FormularioTransferencia> {
             child: SizedBox(
               width: double.maxFinite,
               child: RaisedButton(
-                child: Text('Transferir'),
+                child: Text(_tituloBotaoCriar),
                 onPressed: () {
                   final valor = double.tryParse(_controlador.text);
                   final transferenciaCriada =
                       Transferencia(valor, widget._contato);
-                  salva(transferenciaCriada);
+                  _salva(transferenciaCriada);
                 },
               ),
             ),
@@ -72,7 +77,7 @@ class FormularioTransferenciaState extends State<FormularioTransferencia> {
     );
   }
 
-  void salva(Transferencia transferencia) async {
+  void _salva(Transferencia transferencia) async {
     final bool salvo = await TransferenciaWebClient().salva(transferencia);
     if (salvo) {
       Navigator.pop(context);

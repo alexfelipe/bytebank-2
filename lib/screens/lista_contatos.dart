@@ -5,27 +5,29 @@ import 'package:flutter/material.dart';
 
 import 'formulario_contato.dart';
 
+const _tituloAppBar = 'Contatos';
+
 class ListaContatos extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return ListaContatosState();
+    return _ListaContatosState();
   }
 }
 
-class ListaContatosState extends State<ListaContatos> {
-  final List<Contato> contatos = List();
-  final ContatoDao dao = ContatoDao();
+class _ListaContatosState extends State<ListaContatos> {
+  final List<Contato> _contatos = List();
+  final ContatoDao _dao = ContatoDao();
 
   @override
   void initState() {
     super.initState();
-    buscaContatos();
+    _buscaContatos();
   }
 
-  Future buscaContatos() async {
-    final contatos = await dao.todos();
+  Future _buscaContatos() async {
+    final contatosEncontrados = await _dao.todos();
     setState(() {
-      this.contatos.addAll(contatos);
+      this._contatos.addAll(contatosEncontrados);
     });
   }
 
@@ -33,32 +35,24 @@ class ListaContatosState extends State<ListaContatos> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contatos'),
+        title: Text(_tituloAppBar),
       ),
       body: ListView.builder(
-        itemCount: contatos.length,
+        itemCount: _contatos.length,
         itemBuilder: (context, posicao) {
-          final contato = contatos[posicao];
-          return InkWell(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) {
-                  return FormularioTransferencia(contato);
-                },
-              ));
-            },
-            child: Container(
-              height: 100,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  child: ListTile(
-                    title: Text(
-                      contato.nome,
-                      style: TextStyle(fontSize: 24.0),
-                    ),
-                    subtitle: Text('${contato.numeroConta}'),
+          final contato = _contatos[posicao];
+          return Container(
+            height: 100,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: ListTile(
+                  onTap: () => _vaiParaFormularioTransferencia(contato),
+                  title: Text(
+                    contato.nome,
+                    style: TextStyle(fontSize: 24.0),
                   ),
+                  subtitle: Text('${contato.numeroConta}'),
                 ),
               ),
             ),
@@ -66,26 +60,34 @@ class ListaContatosState extends State<ListaContatos> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => vaiParaFormulario(context),
+        onPressed: () => _vaiParaFormularioContato(context),
         child: Icon(Icons.add),
       ),
     );
   }
 
-  vaiParaFormulario(BuildContext context) async {
+  _vaiParaFormularioTransferencia(Contato contato) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) {
+        return FormularioTransferencia(contato);
+      },
+    ));
+  }
+
+  _vaiParaFormularioContato(BuildContext context) async {
     final int idContato = await Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => FormularioContato(),
     ));
     if (idContato != null) {
       setState(() {
-        atualiza();
+        _atualiza();
       });
     }
   }
 
-  Future atualiza() async {
-    contatos.clear();
-    final contatosNovos = await dao.todos();
-    contatos.addAll(contatosNovos);
+  Future _atualiza() async {
+    _contatos.clear();
+    final contatosNovos = await _dao.todos();
+    _contatos.addAll(contatosNovos);
   }
 }

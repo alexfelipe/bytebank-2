@@ -5,7 +5,11 @@ class Transferencia {
   final Contato contato;
   final DateTime data;
 
-  Transferencia(this.valor, this.contato, {this.data});
+  Transferencia(
+    this.valor,
+    this.contato, {
+    this.data,
+  });
 
   @override
   String toString() {

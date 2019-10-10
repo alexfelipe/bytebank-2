@@ -5,24 +5,27 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 final String urlBase = '$urlBaseApi/transferencias';
-final Map<String, String> jsonContent = {"Content-type": "application/json"};
+const Map<String, String> applicationJson = {"Content-type": "application/json"};
+
+const _transferenciasNaoEncontradas = 'Falha ao buscar transferências';
 
 class TransferenciaWebClient {
+
   Future<List<Transferencia>> todas() async {
     final resposta = await http.get(urlBase);
     if (resposta.statusCode == 200) {
       final List jsonDecodificado = json.decode(resposta.body);
-      return jsonDecodificado.map((i) => _paraTransferencia(i)).toList();
+      return jsonDecodificado.map((json) => _paraTransferencia(json)).toList();
     }
-    throw Exception('Falha ao buscar transferências');
+    throw Exception(_transferenciasNaoEncontradas);
   }
 
   Future<bool> salva(Transferencia transferencia) async {
-    final Map<String, dynamic> body = _paraJson(transferencia);
+    final Map<String, dynamic> json = _paraJson(transferencia);
     final resposta = await http.post(
       urlBase,
-      headers: jsonContent,
-      body: jsonEncode(body),
+      headers: applicationJson,
+      body: jsonEncode(json),
     );
     if (resposta.statusCode == 200) {
       return true;
@@ -41,7 +44,10 @@ class TransferenciaWebClient {
   }
 
   Contato _paraContato(Map<String, dynamic> json) {
-    return Contato(json['nome'], json['numeroConta']);
+    return Contato(
+      json['nome'],
+      json['numeroConta'],
+    );
   }
 
   Map<String, dynamic> _paraJson(Transferencia transferencia) {

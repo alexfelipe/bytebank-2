@@ -1,19 +1,23 @@
+import 'package:bytebank/webclient/webclient_config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:bytebank/models/feature.dart';
+
+final String urlBase = "$urlBaseApi/features";
+
+const _featuresNaoEncontradas = 'Não foram encontradas as features';
 
 class FeatureWebClient {
   Future<List<Feature>> todas() async {
     final resposta = await http.get(urlBase);
     if (resposta.statusCode == 200) {
-      print('resposta ${resposta.body}');
       final List jsonDecodificado = json.decode(resposta.body);
-      return jsonDecodificado.map((mapa) => converteParaFeature(mapa)).toList();
+      return jsonDecodificado.map((json) => _converteParaFeature(json)).toList();
     }
-    throw Exception('Não foram encontradas as features');
+    throw Exception(_featuresNaoEncontradas);
   }
 
-  Feature converteParaFeature(Map<String, dynamic> json) {
+  Feature _converteParaFeature(Map<String, dynamic> json) {
     return Feature(
       json['nome'],
       json['disponivel'],

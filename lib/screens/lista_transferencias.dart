@@ -8,11 +8,11 @@ const _tituloAppBar = 'Transferências';
 class ListaTransferencias extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return ListaTransferenciasState();
+    return _ListaTransferenciasState();
   }
 }
 
-class ListaTransferenciasState extends State<ListaTransferencias> {
+class _ListaTransferenciasState extends State<ListaTransferencias> {
   final List<Transferencia> _transferencias = List();
 
   @override
@@ -39,8 +39,7 @@ class ListaTransferenciasState extends State<ListaTransferencias> {
 
   Widget configuraWidget() {
     if (_temTransferencia()) {
-      print("tranferencias $_transferencias");
-      return Transferencias(_transferencias);
+      return _Transferencias(_transferencias);
     }
     return Progresso();
   }
@@ -48,10 +47,10 @@ class ListaTransferenciasState extends State<ListaTransferencias> {
   bool _temTransferencia() => _transferencias.isNotEmpty;
 }
 
-class Transferencias extends StatelessWidget {
+class _Transferencias extends StatelessWidget {
   final List<Transferencia> _transferencias;
 
-  Transferencias(this._transferencias);
+  _Transferencias(this._transferencias);
 
   @override
   Widget build(BuildContext context) {
@@ -59,15 +58,15 @@ class Transferencias extends StatelessWidget {
         itemCount: _transferencias.length,
         itemBuilder: (context, indice) {
           final transferencia = _transferencias[indice];
-          return ItemTransferencia(transferencia);
+          return _ItemTransferencia(transferencia);
         });
   }
 }
 
-class ItemTransferencia extends StatelessWidget {
+class _ItemTransferencia extends StatelessWidget {
   final Transferencia _transferencia;
 
-  ItemTransferencia(this._transferencia);
+  _ItemTransferencia(this._transferencia);
 
   @override
   Widget build(BuildContext context) {
@@ -79,10 +78,13 @@ class ItemTransferencia extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(_transferencia.contato.nome),
-          Text(
-              '${_transferencia.data.day}/${_transferencia.data.month}/${_transferencia.data.year}'),
+          Text(_formataParaDataHoraBrasileira(_transferencia.data)),
         ],
       ),
     ));
+  }
+
+  String _formataParaDataHoraBrasileira(DateTime dataHora) {
+    return '${dataHora.day}/${dataHora.month}/${dataHora.year}';
   }
 }
