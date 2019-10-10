@@ -6,6 +6,7 @@ class FeatureWebClient {
   Future<List<Feature>> todas() async {
     final resposta = await http.get(urlBase);
     if (resposta.statusCode == 200) {
+      print('resposta ${resposta.body}');
       final List jsonDecodificado = json.decode(resposta.body);
       return jsonDecodificado.map((mapa) => converteParaFeature(mapa)).toList();
     }
