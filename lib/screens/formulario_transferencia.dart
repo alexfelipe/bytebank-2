@@ -26,12 +26,29 @@ class FormularioTransferenciaState extends State<FormularioTransferencia> {
       ),
       body: Column(
         children: <Widget>[
-          Text(widget._contato.nome),
-          Text(widget._contato.numeroConta.toString()),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              widget._contato.nome,
+              style: TextStyle(fontSize: 24.0),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 0.0,
+              horizontal: 16.0,
+            ),
+            child: Text(widget._contato.numeroConta.toString(),
+                style: TextStyle(fontSize: 16.0)),
+          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
+              keyboardType: TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               controller: _controlador,
+              style: TextStyle(fontSize: 24.0),
               decoration: InputDecoration(labelText: 'Valor'),
             ),
           ),
@@ -40,10 +57,11 @@ class FormularioTransferenciaState extends State<FormularioTransferencia> {
             child: SizedBox(
               width: double.maxFinite,
               child: RaisedButton(
-                child: Text('Criar'),
+                child: Text('Transferir'),
                 onPressed: () {
                   final valor = double.tryParse(_controlador.text);
-                  final transferenciaCriada = Transferencia(valor, widget._contato);
+                  final transferenciaCriada =
+                      Transferencia(valor, widget._contato);
                   salva(transferenciaCriada);
                 },
               ),
@@ -56,7 +74,7 @@ class FormularioTransferenciaState extends State<FormularioTransferencia> {
 
   void salva(Transferencia transferencia) async {
     final bool salvo = await TransferenciaWebClient().salva(transferencia);
-    if(salvo) {
+    if (salvo) {
       Navigator.pop(context);
     }
   }

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'lista_contatos.dart';
 
-class Dashboard extends StatelessWidget {
+class
+Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +22,7 @@ class Dashboard extends StatelessWidget {
               child: Container(
                 color: Colors.blue,
                 child: Image.asset(
-                  'assets/bitcoin.jpg',
+                  'assets/logo-bytebank.png',
                   fit: BoxFit.cover,
                 ),
                 height: 300,

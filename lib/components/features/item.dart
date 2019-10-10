@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-class FeatureItem extends StatelessWidget {
+class ItemFeature extends StatelessWidget {
+
   final IconData icone;
   final String texto;
   final Function() quandoClica;
 
-  const FeatureItem({
+  const ItemFeature({
     this.icone,
     this.texto,
     this.quandoClica,
