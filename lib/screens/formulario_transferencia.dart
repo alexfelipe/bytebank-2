@@ -78,6 +78,7 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
   }
 
   void _salva(Transferencia transferencia) async {
+    //TODO tanto client como o DAO eu pensei como uma dependência que poderia ser entregue via injeção, se tiverem exemplo, pode avisar
     final bool salvo = await TransferenciaWebClient().salva(transferencia);
     if (salvo) {
       Navigator.pop(context);

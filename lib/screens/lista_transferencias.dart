@@ -84,6 +84,7 @@ class _ItemTransferencia extends StatelessWidget {
     ));
   }
 
+  //TODO vi que tem lib para fazer formatação, vale a pena considerar a lib ou tem outras técnicas built-in?
   String _formataParaDataHoraBrasileira(DateTime dataHora) {
     return '${dataHora.day}/${dataHora.month}/${dataHora.year}';
   }

@@ -18,6 +18,7 @@ class _ListaContatosState extends State<ListaContatos> {
   final List<Contato> _contatos = List();
   final ContatoDao _dao = ContatoDao();
 
+  //TODO todas as buscas iniciais para fazer load na tela estou considerando essa função, existe alguma outra maneira recomendada?
   @override
   void initState() {
     super.initState();

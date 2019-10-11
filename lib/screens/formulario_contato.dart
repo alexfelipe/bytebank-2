@@ -67,6 +67,7 @@ class _FormularioContatoState extends State<FormularioContato> {
     Navigator.pop(context, id);
   }
 
+  //TODO não foquei em validação
   Contato _criaContato() {
     final nome = _nomeController.text;
     final numeroConta = int.tryParse(_numeroContaController.text);

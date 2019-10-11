@@ -33,6 +33,7 @@ class TransferenciaWebClient {
     return false;
   }
 
+  //TODO usando as diferentes formas para ver como funciona e entender os problemas
   Transferencia _paraTransferencia(Map<String, dynamic> json) {
     return Transferencia(
       json['valor'],

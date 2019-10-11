@@ -62,18 +62,31 @@ class _ListaFeaturesState extends State<ListaFeatures> {
   _buscaTodas() async {
     final List<Feature> features = await FeatureWebClient().todas();
     final itemFeaturesDisponiveis = _carregaFeaturesDisponiveis(features);
+
+    //TODO código apenas para carregar padrões features caso não tenha comunicação com API
+    if (itemFeaturesDisponiveis.isNotEmpty) {
+      itemFeaturesDisponiveis.add(_devolveItemFeature(
+          Feature(_featureTransferir, true)));
+      itemFeaturesDisponiveis.add(_devolveItemFeature(
+          Feature(_featureHistorico, true)));
+    }
+
+    //TODO estou usando essa técnica para atualizar a lista, existe alguma outra abordagem recomendada?
     setState(() {
-      _features.addAll(itemFeaturesDisponiveis);
+    _features.addAll(itemFeaturesDisponiveis);
     });
   }
 
+
   List<ItemFeature> _carregaFeaturesDisponiveis(List<Feature> features) {
     return features
+        //TODO considerei essa técnica para transformar e filtrar, tem algo mais sucinto?
         .map((feature) => _devolveItemFeature(feature))
         .where((itemFeature) => itemFeature != null)
         .toList();
   }
 
+  //TODO Tem algum pattern para usar esse tipo de solução?
   ItemFeature _devolveItemFeature(Feature feature) {
     switch (feature.nome) {
       case _featureHistorico:

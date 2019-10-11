@@ -17,6 +17,7 @@ const String _sqlTabelaContatos = 'CREATE TABLE $_tabelaContatos('
     ' $_campoNome TEXT,'
     ' $_campoNumeroConta INTEGER)';
 
+//TODO usei o sqflite, avisa se tiver outra lib recomendada
 class ContatoDao {
   Future<Database> _abreBanco() async {
     return openDatabase(
@@ -47,6 +48,7 @@ class ContatoDao {
     final Database db = await _abreBanco();
     final List<Map<String, dynamic>> resultado =
         await db.query(_tabelaContatos);
+    //TODO se tiver outra técnica mais sucinta para gerar a lista, manda tbm
     return List.generate(resultado.length, (posicao) {
       final linha = resultado[posicao];
       return Contato(

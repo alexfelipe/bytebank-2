@@ -35,6 +35,7 @@ class Dashboard extends StatelessWidget {
     );
   }
 
+  //TODO todas as navegações eu usei esse estilo simples
   _vaiParaListaContatos(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) {
