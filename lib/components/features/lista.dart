@@ -52,19 +52,32 @@ class _ListaFeaturesState extends State<ListaFeatures> {
     );
   }
 
+  _buscaTodas() async {
+    final List<ItemFeature>itemFeaturesDisponiveis = List();
+    try {
+      final List<Feature> features = await FeatureWebClient().todas();
+      itemFeaturesDisponiveis.addAll(_carregaFeaturesDisponiveis(features));
+    } catch (Exception) {}
+
+    if (itemFeaturesDisponiveis.isEmpty) {
+      itemFeaturesDisponiveis.add(_devolveItemFeature(
+        Feature(_featureTransferir, true),
+      ));
+      itemFeaturesDisponiveis.add(_devolveItemFeature(
+        Feature(_featureHistorico, true),
+      ));
+    }
+
+    setState(() {
+      _features.addAll(itemFeaturesDisponiveis);
+    });
+  }
+
   Widget _tentaCarregarFeatures() {
     if (_features.isEmpty) {
       return Progresso();
     }
     return Features(_features);
-  }
-
-  _buscaTodas() async {
-    final List<Feature> features = await FeatureWebClient().todas();
-    final itemFeaturesDisponiveis = _carregaFeaturesDisponiveis(features);
-    setState(() {
-      _features.addAll(itemFeaturesDisponiveis);
-    });
   }
 
   List<ItemFeature> _carregaFeaturesDisponiveis(List<Feature> features) {
@@ -101,7 +114,6 @@ class _ListaFeaturesState extends State<ListaFeatures> {
     }
     return null;
   }
-
 }
 
 class Features extends StatelessWidget {

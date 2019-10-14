@@ -1,4 +1,5 @@
 import 'package:bytebank/components/progresso.dart';
+import 'package:bytebank/models/contato.dart';
 import 'package:bytebank/models/transferencia.dart';
 import 'package:bytebank/webclient/transferencia_webclient.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +23,22 @@ class _ListaTransferenciasState extends State<ListaTransferencias> {
   }
 
   void buscaTodas() async {
-    final transferenciasEncontradas = await TransferenciaWebClient().todas();
+    final List<Transferencia> transferencias = List();
+    try {
+      final transferenciasEncontradas = await TransferenciaWebClient().todas();
+      transferencias.addAll(transferenciasEncontradas);
+    } catch (e) {
+
+    }
+    if (transferencias.isEmpty) {
+      transferencias.add(Transferencia(
+        200.0,
+        Contato('Alex', 1000),
+        data: DateTime.now(),
+      ));
+    }
     setState(() {
-      _transferencias.addAll(transferenciasEncontradas);
+      _transferencias.addAll(transferencias);
     });
   }
 
