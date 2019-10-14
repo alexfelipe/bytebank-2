@@ -1,4 +1,5 @@
 import 'package:bytebank/dao/ContatoDao.dart';
+import 'package:bytebank/main.dart';
 import 'package:bytebank/models/contato.dart';
 import 'package:bytebank/screens/formulario_transferencia.dart';
 import 'package:flutter/material.dart';
@@ -67,17 +68,15 @@ class _ListaContatosState extends State<ListaContatos> {
   }
 
   _vaiParaFormularioTransferencia(Contato contato) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) {
-        return FormularioTransferencia(contato);
-      },
-    ));
+    BytebankNavigator.vaiParaFormularioTransferencia(
+      context,
+      contato,
+    );
   }
 
   _vaiParaFormularioContato(BuildContext context) async {
-    final int idContato = await Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => FormularioContato(),
-    ));
+    final int idContato =
+        await BytebankNavigator.vaiParaFormularioContatos(context);
     if (idContato != null) {
       setState(() {
         _atualiza();

@@ -1,9 +1,8 @@
 import 'package:bytebank/components/features/lista.dart';
 import 'package:bytebank/components/quadro.dart';
+import 'package:bytebank/main.dart';
 import 'package:bytebank/screens/lista_transferencias.dart';
 import 'package:flutter/material.dart';
-
-import 'lista_contatos.dart';
 
 const _imagemDashboard = 'assets/logo-bytebank.png';
 
@@ -36,18 +35,10 @@ class Dashboard extends StatelessWidget {
   }
 
   _vaiParaListaContatos(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) {
-        return ListaContatos();
-      },
-    ));
+    BytebankNavigator.vaiParaTransferir(context);
   }
 
   _vaiParaListaTransferencias(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) {
-        return ListaTransferencias();
-      },
-    ));
+    BytebankNavigator.vaiParaHistorico(context);
   }
 }
