@@ -13,4 +13,14 @@ class Contato {
   String toString() {
     return 'Contato{id: $id, nome: $nome, numeroConta: $numeroConta}';
   }
+
+  Contato.deJson(Map<String, dynamic> json)
+      : nome = json['nome'],
+        numeroConta = json['numeroConta'],
+        id = json['id'];
+
+  Map<String, dynamic> paraJson() => {
+    "nome" : nome,
+    "numeroConta" : numeroConta
+  };
 }

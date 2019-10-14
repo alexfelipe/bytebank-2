@@ -1,8 +1,8 @@
 import 'package:bytebank/components/features/lista.dart';
 import 'package:bytebank/components/quadro.dart';
+import 'package:bytebank/models/feature.dart';
 import 'package:bytebank/screens/lista_transferencias.dart';
 import 'package:flutter/material.dart';
-
 import 'lista_contatos.dart';
 
 const _imagemDashboard = 'assets/logo-bytebank.png';
@@ -16,22 +16,48 @@ class Dashboard extends StatelessWidget {
       appBar: AppBar(
         title: Text(_tituloAppBar),
       ),
-      body: Container(
-        color: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Quadro(
-              altura: 400.0,
-              caminhoImagem: _imagemDashboard,
+      /**TODO para manter o dashboard com o mesmo visual e
+       * com comportamentos de scroll tive que usar esse exemplo
+       * que peguei na página da documentação,
+       * é necessário realizar esse procedimento completo?
+       * */
+      body: LayoutBuilder(builder: (context, viewportConstraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: viewportConstraints.maxHeight,
             ),
-            ListaFeatures(
-              quandoClicaContatos: () => _vaiParaListaContatos(context),
-              quandoClicaTransacoes: () => _vaiParaListaTransferencias(context),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Quadro(
+                  altura: 400.0,
+                  caminhoImagem: _imagemDashboard,
+                ),
+                ListaFeatures(
+                  featureClicada: (featureSelecionada) {
+                    //TODO fiz da maneira mais simple, se tiver sugestão para algo mais sucinto e prático é só avisar
+                    switch (featureSelecionada.codigo) {
+                      case CodigoFeature.transferir:
+                        _vaiParaListaContatos(context);
+                        break;
+                      case CodigoFeature.historico:
+                        _vaiParaListaTransferencias(context);
+                        break;
+                      case CodigoFeature.cartaoDeCredito:
+                        print("cartão de crédito selecionado");
+                        break;
+                      case CodigoFeature.ajuda:
+                        print("ajuda selecionado");
+                        break;
+                    }
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      }),
     );
   }
 

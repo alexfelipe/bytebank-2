@@ -5,26 +5,10 @@ import 'package:flutter/material.dart';
 
 import 'item.dart';
 
-const _featureHistorico = 'historico';
-const _tituloFeatureHistorico = 'Histórico';
-
-const _featureTransferir = 'transferir';
-const _tituloFeatureTransferir = "Transferir";
-
-const _featureCartaoDeCredito = 'cartao de credito';
-const _tituloFeatureCartaoDeCredito = 'Cartão de crédito';
-
-const _featureAjuda = 'ajuda';
-const _tituloFeatureAjuda = 'Ajuda';
-
 class ListaFeatures extends StatefulWidget {
-  final Function() quandoClicaTransacoes;
-  final Function() quandoClicaContatos;
+  final Function(Feature) featureClicada;
 
-  const ListaFeatures({
-    this.quandoClicaTransacoes,
-    this.quandoClicaContatos,
-  });
+  const ListaFeatures({this.featureClicada});
 
   @override
   State<StatefulWidget> createState() {
@@ -33,7 +17,7 @@ class ListaFeatures extends StatefulWidget {
 }
 
 class _ListaFeaturesState extends State<ListaFeatures> {
-  List<ItemFeature> _features = List();
+  final List<ItemFeature> _features = List();
 
   @override
   void initState() {
@@ -60,61 +44,35 @@ class _ListaFeaturesState extends State<ListaFeatures> {
   }
 
   _buscaTodas() async {
-    final List<Feature> features = await FeatureWebClient().todas();
-    final itemFeaturesDisponiveis = _carregaFeaturesDisponiveis(features);
+    final List<Feature> features = List();
 
-    //TODO código apenas para carregar padrões features caso não tenha comunicação com API
-    if (itemFeaturesDisponiveis.isNotEmpty) {
-      itemFeaturesDisponiveis.add(_devolveItemFeature(
-          Feature(_featureTransferir, true)));
-      itemFeaturesDisponiveis.add(_devolveItemFeature(
-          Feature(_featureHistorico, true)));
+    //TODO adicionei o try catch devido às exceptions, em relação os prints de exceptions, costumam usar o debugPrint/print ou tem outra abordagem?
+    try {
+      features.addAll(await FeatureWebClient().todas());
+    } catch (e) {
+      print(e);
     }
 
-    //TODO estou usando essa técnica para atualizar a lista, existe alguma outra abordagem recomendada?
+    final itemFeaturesDisponiveis =
+        features.map((feature) => _devolveItemFeature(feature)).toList();
+
+    if (itemFeaturesDisponiveis.isEmpty) {
+      itemFeaturesDisponiveis.add(_devolveItemFeature(todasFeatures[1]));
+      itemFeaturesDisponiveis.add(_devolveItemFeature(todasFeatures[2]));
+    }
+
     setState(() {
-    _features.addAll(itemFeaturesDisponiveis);
+      _features.addAll(itemFeaturesDisponiveis);
     });
-  }
-
-
-  List<ItemFeature> _carregaFeaturesDisponiveis(List<Feature> features) {
-    return features
-        //TODO considerei essa técnica para transformar e filtrar, tem algo mais sucinto?
-        .map((feature) => _devolveItemFeature(feature))
-        .where((itemFeature) => itemFeature != null)
-        .toList();
   }
 
   //TODO Tem algum pattern para usar esse tipo de solução?
   ItemFeature _devolveItemFeature(Feature feature) {
-    switch (feature.nome) {
-      case _featureHistorico:
-        return ItemFeature(
-          quandoClica: () => widget.quandoClicaTransacoes(),
-          icone: Icons.description,
-          texto: _tituloFeatureHistorico,
-        );
-      case _featureTransferir:
-        return ItemFeature(
-          quandoClica: () => widget.quandoClicaContatos(),
-          icone: Icons.monetization_on,
-          texto: _tituloFeatureTransferir,
-        );
-      case _featureCartaoDeCredito:
-        return ItemFeature(
-          icone: Icons.credit_card,
-          texto: _tituloFeatureCartaoDeCredito,
-        );
-      case _featureAjuda:
-        return ItemFeature(
-          icone: Icons.help,
-          texto: _tituloFeatureAjuda,
-        );
-    }
-    return null;
+    return ItemFeature(
+      feature: feature,
+      quandoClica: widget.featureClicada,
+    );
   }
-
 }
 
 class Features extends StatelessWidget {

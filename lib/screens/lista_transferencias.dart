@@ -1,7 +1,9 @@
 import 'package:bytebank/components/progresso.dart';
+import 'package:bytebank/models/contato.dart';
 import 'package:bytebank/models/transferencia.dart';
 import 'package:bytebank/webclient/transferencia_webclient.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 const _tituloAppBar = 'Histórico';
 
@@ -22,9 +24,29 @@ class _ListaTransferenciasState extends State<ListaTransferencias> {
   }
 
   void buscaTodas() async {
-    final transferenciasEncontradas = await TransferenciaWebClient().todas();
+    final List<Transferencia> transferencias = List();
+    try {
+      final transferenciasEncontradas = await TransferenciaWebClient().todas();
+      transferencias.addAll(transferenciasEncontradas);
+    } catch (e) {
+      print(e);
+    }
+
     setState(() {
-      _transferencias.addAll(transferenciasEncontradas);
+      if (transferencias.isNotEmpty) {
+        _transferencias.addAll(transferencias);
+      } else {
+        _transferencias.add(
+          Transferencia(
+            20.0,
+            Contato(
+              'alex',
+              1000,
+            ),
+            data: DateTime.now(),
+          ),
+        );
+      }
     });
   }
 
@@ -34,10 +56,10 @@ class _ListaTransferenciasState extends State<ListaTransferencias> {
         appBar: AppBar(
           title: Text(_tituloAppBar),
         ),
-        body: configuraWidget());
+        body: _configuraWidget());
   }
 
-  Widget configuraWidget() {
+  Widget _configuraWidget() {
     if (_temTransferencia()) {
       return _Transferencias(_transferencias);
     }
@@ -71,21 +93,21 @@ class _ItemTransferencia extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        child: ListTile(
-      leading: Icon(Icons.monetization_on),
-      title: Text(_transferencia.valor.toString()),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(_transferencia.contato.nome),
-          Text(_formataParaDataHoraBrasileira(_transferencia.data)),
-        ],
+      child: ListTile(
+        leading: Icon(Icons.monetization_on),
+        title: Text(_transferencia.valor.toString()),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(_transferencia.contato.nome),
+            Text(_formataParaDataHoraBrasileira(_transferencia.data)),
+          ],
+        ),
       ),
-    ));
+    );
   }
 
-  //TODO vi que tem lib para fazer formatação, vale a pena considerar a lib ou tem outras técnicas built-in?
   String _formataParaDataHoraBrasileira(DateTime dataHora) {
-    return '${dataHora.day}/${dataHora.month}/${dataHora.year}';
+    return new DateFormat('dd/MM/yy hh:mm').format(dataHora);
   }
 }

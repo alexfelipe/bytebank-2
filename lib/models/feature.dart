@@ -1,18 +1,45 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 class Feature {
+  final CodigoFeature codigo;
   final String nome;
-  final bool disponivel;
+  final IconData icone;
 
   Feature(
+    this.codigo,
     this.nome,
-    this.disponivel,
+    this.icone,
   );
+}
 
-  @override
-  String toString() {
-    return 'Feature{nome: $nome, disponivel: $disponivel}';
-  }
+//TODO fiquei em dúvida onde deixar tanto o mapa como também o enum, seja diretório ou arquivo
+Map<int, Feature> todasFeatures = {
+  1: Feature(
+    CodigoFeature.transferir,
+    "Transferir",
+    Icons.monetization_on,
+  ),
+  2: Feature(
+    CodigoFeature.historico,
+    "Histórico",
+    Icons.description,
+  ),
+  3: Feature(
+    CodigoFeature.cartaoDeCredito,
+    "Cartão de crédito",
+    Icons.credit_card,
+  ),
+  4: Feature(
+    CodigoFeature.ajuda,
+    "Ajuda",
+    Icons.help,
+  ),
+};
 
-  Feature.deJson(Map<String, dynamic> json)
-      : nome = json['nome'],
-        disponivel = json['disponivel'];
+enum CodigoFeature {
+  historico,
+  transferir,
+  cartaoDeCredito,
+  ajuda,
 }

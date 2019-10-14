@@ -18,7 +18,6 @@ class _ListaContatosState extends State<ListaContatos> {
   final List<Contato> _contatos = List();
   final ContatoDao _dao = ContatoDao();
 
-  //TODO todas as buscas iniciais para fazer load na tela estou considerando essa função, existe alguma outra maneira recomendada?
   @override
   void initState() {
     super.initState();
@@ -42,20 +41,14 @@ class _ListaContatosState extends State<ListaContatos> {
         itemCount: _contatos.length,
         itemBuilder: (context, posicao) {
           final contato = _contatos[posicao];
-          return Container(
-            height: 100,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(
-                child: ListTile(
-                  onTap: () => _vaiParaFormularioTransferencia(contato),
-                  title: Text(
-                    contato.nome,
-                    style: TextStyle(fontSize: 24.0),
-                  ),
-                  subtitle: Text('${contato.numeroConta}'),
-                ),
+          return Card(
+            child: ListTile(
+              onTap: () => _vaiParaFormularioTransferencia(contato),
+              title: Text(
+                contato.nome,
+                style: TextStyle(fontSize: 24.0),
               ),
+              subtitle: Text('${contato.numeroConta}'),
             ),
           );
         },

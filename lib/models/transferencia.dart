@@ -15,4 +15,14 @@ class Transferencia {
   String toString() {
     return 'Transferencia{valor: $valor, contato:  $contato, data: $data}';
   }
+
+  Transferencia.deJson(Map<String, dynamic> json)
+      : valor = json['valor'],
+        contato = Contato.deJson(json['contato']),
+        data = DateTime.parse(json['data']);
+
+  Map<String, dynamic> paraJson() => {
+        "valor": valor,
+        "contato": contato.paraJson(),
+      };
 }

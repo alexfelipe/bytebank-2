@@ -29,50 +29,49 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
       appBar: AppBar(
         title: Text(_tituloAppBar),
       ),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              widget._contato.nome,
-              style: TextStyle(fontSize: 24.0),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 0.0,
-              horizontal: 16.0,
-            ),
-            child: Text(widget._contato.numeroConta.toString(),
-                style: TextStyle(fontSize: 16.0)),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              keyboardType: TextInputType.numberWithOptions(
-                decimal: true,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Text(
+                widget._contato.nome,
+                style: TextStyle(fontSize: 24.0),
               ),
-              controller: _controlador,
-              style: TextStyle(fontSize: 24.0),
-              decoration: InputDecoration(labelText: _rotuloCampoValor),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SizedBox(
-              width: double.maxFinite,
-              child: RaisedButton(
-                child: Text(_tituloBotaoCriar),
-                onPressed: () {
-                  final valor = double.tryParse(_controlador.text);
-                  final transferenciaCriada =
-                      Transferencia(valor, widget._contato);
-                  _salva(transferenciaCriada);
-                },
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(widget._contato.numeroConta.toString(),
+                    style: TextStyle(fontSize: 16.0)),
               ),
-            ),
-          )
-        ],
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: TextField(
+                  keyboardType: TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  controller: _controlador,
+                  style: TextStyle(fontSize: 24.0),
+                  decoration: InputDecoration(labelText: _rotuloCampoValor),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: SizedBox(
+                  width: double.maxFinite,
+                  child: RaisedButton(
+                    child: Text(_tituloBotaoCriar),
+                    onPressed: () {
+                      final valor = double.tryParse(_controlador.text);
+                      final transferenciaCriada =
+                          Transferencia(valor, widget._contato);
+                      _salva(transferenciaCriada);
+                    },
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -1,13 +1,12 @@
+import 'package:bytebank/models/feature.dart';
 import 'package:flutter/material.dart';
 
 class ItemFeature extends StatelessWidget {
-  final IconData icone;
-  final String texto;
-  final Function() quandoClica;
+  final Function(Feature) quandoClica;
+  final Feature feature;
 
   const ItemFeature({
-    this.icone,
-    this.texto,
+    this.feature,
     this.quandoClica,
   });
 
@@ -18,7 +17,7 @@ class ItemFeature extends StatelessWidget {
       child: Material(
         color: Theme.of(context).primaryColor,
         child: InkWell(
-          onTap: () => quandoClica(),
+          onTap: () => quandoClica(feature),
           child: Container(
             width: 150,
             child: Padding(
@@ -28,13 +27,13 @@ class ItemFeature extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Icon(
-                    icone,
+                    feature.icone,
                     size: 24.0,
                     color: Colors.white,
                   ),
                   Flexible(
                       child: Text(
-                    texto,
+                    feature.nome,
                     style: TextStyle(
                       fontSize: 16.0,
                       color: Colors.white,
