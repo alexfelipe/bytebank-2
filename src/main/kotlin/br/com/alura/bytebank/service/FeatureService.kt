@@ -5,10 +5,16 @@ import br.com.alura.bytebank.repository.FeaturesRepository
 import org.springframework.stereotype.Service
 
 @Service
-class FeatureService(private val repository: FeaturesRepository) {
+class FeatureService(
+        private val repository: FeaturesRepository) {
 
     fun todas() = repository.findAll().toList()
 
-    fun salva(feature: Feature) = repository.save(feature);
+    fun salva(feature: Feature) = repository.save(feature)
+
+    fun disponiveis(): List<Feature> =
+            repository.findAllByDisponivel(true)
+
+    fun valida(feature: Feature) = feature.id > 0
 
 }

@@ -1,30 +1,22 @@
 package br.com.alura.bytebank
 
-import br.com.alura.bytebank.model.Feature
-import br.com.alura.bytebank.service.FeatureService
+import br.com.alura.bytebank.service.ServiceInicializador
+import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.stereotype.Component
-import javax.annotation.PostConstruct
+import org.springframework.context.annotation.Bean
 
 @SpringBootApplication
-class BytebankApplication
+class BytebankApplication(
+        private val service: ServiceInicializador) {
 
-fun main(args: Array<String>) {
-	runApplication<BytebankApplication>(*args)
+    @Bean
+    fun executa() = ApplicationRunner {
+        service.salvaFeaturesPadroes()
+    }
+
 }
 
-private const val featureHistorico = "historico"
-
-private const val featureTransferir = "transferir"
-
-@Component
-class SalvaFeatures(private val service: FeatureService) {
-
-	@PostConstruct
-	fun init(){
-		service.salva(Feature(featureTransferir))
-		service.salva(Feature(featureHistorico))
-	}
-
+fun main(args: Array<String>) {
+    runApplication<BytebankApplication>(*args)
 }

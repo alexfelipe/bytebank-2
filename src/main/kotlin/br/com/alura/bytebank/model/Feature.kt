@@ -6,6 +6,7 @@ import javax.persistence.Id
 @Entity
 class Feature(
         @Id
+        val id: Long = 0,
         val nome: String,
-        val disponivel: Boolean = true
+        val disponivel: Boolean = false
 )

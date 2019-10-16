@@ -5,4 +5,6 @@ import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface FeaturesRepository : PagingAndSortingRepository<Feature, String>
+interface FeaturesRepository : PagingAndSortingRepository<Feature, String> {
+    fun findAllByDisponivel(disponivel: Boolean): List<Feature>
+}

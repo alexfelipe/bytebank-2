@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service
 @Service
 class TransferenciaService(private val repository: TransferenciaRepository) {
 
-    fun todas() = repository.findAll().toList()
+    fun todas() = repository.findAllByOrderByDataAsc()
 
     fun salva(transferencia: Transferencia) = repository.save(transferencia)
+
+    fun existe(id: String) = repository.existsById(id)
 
 }
