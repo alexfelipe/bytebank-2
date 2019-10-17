@@ -7,6 +7,5 @@ import javax.persistence.Id
 class Feature(
         @Id
         val id: Long = 0,
-        val nome: String,
         val disponivel: Boolean = false
 )
