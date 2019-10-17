@@ -128,12 +128,10 @@ Para acessar as funcionalidades foram disponibilizados os seguintes end-points:
   // exemplo como resposta
   [
       {
-          "nome": "historico",
-          "disponivel": true
+          "id" : 1
       },
       {
-          "nome": "transferir",
-          "disponivel": true
+          "id" : 2
       }
   ]
   ```
@@ -144,24 +142,44 @@ Para acessar as funcionalidades foram disponibilizados os seguintes end-points:
   ```
   // exemplo via body
   {
-      "id": 3,
-      "nome": "ajuda"
+      "id": 3
   }
 
   // representação como resposta
   {
-      "id": 3,
-      "nome": "ajuda"
+      "id": 3
   }  
   ```
+  
+  Por padrão, todas as features adicionadas estão indisponíveis, para torná-las disponíveis, envie o argumento `disponivel` com valor `true` no corpo da requisição durante o cadastro ou atualização:
+  
+    ```
+    // exemplo via body
+    {
+        "id": 4,
+        "disponivel": true
+    }
+  
+    // representação como resposta
+    {
+        "id": 4
+    }  
+    ```
 
 - `/features/disponiveis`:
   - **GET**: listagem de todas as features cadastradas que estão com status disponível.
 
   ```
-  // representação como resposta
-  {
-      "id": 3,
-      "nome": "ajuda"
-  }  
+  // exemplo como resposta
+  [
+      {
+          "id": 1
+      },
+      {
+          "id": 2
+      },
+      {
+          "id": 4
+      }
+  ]
   ```
