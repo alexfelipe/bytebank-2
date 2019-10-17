@@ -7,8 +7,6 @@ import 'package:http/http.dart' as http;
 final String urlBase = '$urlBaseApi/transferencias';
 const Map<String, String> baseHeaders = {
   "Content-type": "application/json",
-  //TODO vou criar o fluxo que exige a senha do usuário para criar transferência
-  "senha": "1000",
 };
 
 const _transferenciasNaoEncontradas = 'Falha ao buscar transferências';
@@ -25,16 +23,43 @@ class TransferenciaWebClient {
     throw Exception(_transferenciasNaoEncontradas);
   }
 
-  Future<bool> salva(Transferencia transferencia) async {
+  Future<TransacaoResposta> salva(
+      Transferencia transferencia, String senha) async {
+    Map<String, String> headers = _configuraSenhaNoHeader(senha);
     final Map<String, dynamic> json = transferencia.paraJson();
     final resposta = await http.post(
       urlBase,
-      headers: baseHeaders,
+      headers: headers,
       body: jsonEncode(json),
     );
-    if (sucesso(resposta)) {
-      return true;
-    }
-    return false;
+    return validaResposta(resposta);
   }
+
+  Future<TransacaoResposta> validaResposta(http.Response resposta) async {
+    if (resposta.statusCode == 200 || resposta.statusCode == 409) {
+      return TransacaoResposta(true);
+    }
+    return TransacaoResposta(
+      false,
+      mensagem: _mensagensDeFalha[resposta.statusCode],
+    );
+  }
+
+  Map<String, String> _configuraSenhaNoHeader(String senha) {
+    final Map<String, String> headers = Map<String, String>.from(baseHeaders);
+    headers['senha'] = senha;
+    return headers;
+  }
+
+  final Map<int, String> _mensagensDeFalha = {
+    400: "Falha na requisição com a API",
+    401: "Falha na autenticação"
+  };
+}
+
+class TransacaoResposta {
+  final String mensagem;
+  final bool sucesso;
+
+  TransacaoResposta(this.sucesso, {this.mensagem});
 }

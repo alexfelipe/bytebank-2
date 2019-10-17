@@ -61,10 +61,7 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
                   child: RaisedButton(
                     child: Text(_tituloBotaoCriar),
                     onPressed: () {
-                      final valor = double.tryParse(_controlador.text);
-                      final transferenciaCriada =
-                          Transferencia(valor, widget._contato);
-                      _salva(transferenciaCriada);
+                      _criaTransferencia(context);
                     },
                   ),
                 ),
@@ -76,11 +73,71 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
     );
   }
 
-  void _salva(Transferencia transferencia) async {
-    //TODO tanto client como o DAO eu pensei como uma dependência que poderia ser entregue via injeção, se tiverem exemplo, pode avisar
-    final bool salvo = await TransferenciaWebClient().salva(transferencia);
-    if (salvo) {
+  void _criaTransferencia(BuildContext context) async {
+    final valor = double.tryParse(_controlador.text);
+    final transferenciaCriada = Transferencia(valor, widget._contato);
+
+    TextEditingController controller = TextEditingController();
+
+    final String senha = await _solicitaSenha(context, controller);
+    _salva(transferenciaCriada, senha);
+  }
+
+  Future<String> _solicitaSenha(
+    BuildContext context,
+    TextEditingController controlador,
+  ) async =>
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Digite a senha'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                textAlign: TextAlign.center,
+                maxLength: 4,
+                keyboardType: TextInputType.number,
+                style: TextStyle(
+                  letterSpacing: 24.0,
+                  fontSize: 28.0,
+                ),
+                obscureText: true,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+                controller: controlador,
+              ),
+              RaisedButton(
+                child: Text('Confirmar'),
+                onPressed: () => Navigator.pop(context, controlador.text),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  void _salva(Transferencia transferencia, String senha) async {
+    final TransacaoResposta resposta = await TransferenciaWebClient().salva(
+      transferencia,
+      senha,
+    );
+    if (resposta.sucesso) {
       Navigator.pop(context);
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Transação não realizada'),
+          content: Text(resposta.mensagem),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Fechar'),
+            )
+          ],
+        ),
+      );
     }
   }
 }
