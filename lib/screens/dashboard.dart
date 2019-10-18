@@ -37,20 +37,10 @@ class Dashboard extends StatelessWidget {
                 ListaFeatures(
                   featureClicada: (featureSelecionada) {
                     //TODO fiz da maneira mais simple, se tiver sugestão para algo mais sucinto e prático é só avisar
-                    switch (featureSelecionada.codigo) {
-                      case CodigoFeature.transferir:
-                        _vaiParaListaContatos(context);
-                        break;
-                      case CodigoFeature.historico:
-                        _vaiParaListaTransferencias(context);
-                        break;
-                      case CodigoFeature.cartaoDeCredito:
-                        print("cartão de crédito selecionado");
-                        break;
-                      case CodigoFeature.ajuda:
-                        print("ajuda selecionado");
-                        break;
-                    }
+                    _configuraDestinos(
+                      featureSelecionada,
+                      context,
+                    );
                   },
                 ),
               ],
@@ -61,8 +51,28 @@ class Dashboard extends StatelessWidget {
     );
   }
 
+  void _configuraDestinos(
+    Feature feature,
+    BuildContext context,
+  ) {
+    switch (feature.codigo) {
+      case CodigoFeature.transferir:
+        _vaiParaListaContatos(context);
+        break;
+      case CodigoFeature.historico:
+        _vaiParaListaTransferencias(context);
+        break;
+      case CodigoFeature.cartaoDeCredito:
+        print('cartão de crédito selecionado');
+        break;
+      case CodigoFeature.ajuda:
+        print('ajuda selecionado');
+        break;
+    }
+  }
+
   //TODO todas as navegações eu usei esse estilo simples
-  _vaiParaListaContatos(BuildContext context) {
+  void _vaiParaListaContatos(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) {
         return ListaContatos();
@@ -70,7 +80,7 @@ class Dashboard extends StatelessWidget {
     ));
   }
 
-  _vaiParaListaTransferencias(BuildContext context) {
+  void _vaiParaListaTransferencias(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) {
         return ListaTransferencias();

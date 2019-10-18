@@ -79,8 +79,9 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
   }
 
   void _criaTransferencia(BuildContext context) async {
-    final valor = double.tryParse(_controlador.text);
-    final transferenciaCriada = Transferencia(valor, widget._contato);
+    final double valor = double.tryParse(_controlador.text);
+    final Transferencia transferenciaCriada =
+        Transferencia(valor, widget._contato);
     final String senha = await _solicitaSenha(context);
     if (senha != null) {
       _mostraProgresso(context);
@@ -98,7 +99,7 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
     }
   }
 
-  Future _mostraMensagemDeRetorno(
+  Future<void> _mostraMensagemDeRetorno(
       TransacaoResposta resposta, BuildContext context) async {
     if (resposta.sucesso) {
       await _mostraMensagem(
@@ -144,19 +145,20 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
     IconData icone,
   }) =>
       showDialog(
-          context: context,
-          builder: (context) => AvisaDialog(
-                titulo: titulo,
-                mensagem: mensagem,
-                icone: icone,
-              ));
+        context: context,
+        builder: (context) => AvisaDialog(
+          titulo: titulo,
+          mensagem: mensagem,
+          icone: icone,
+        ),
+      );
 
   void _mostraProgresso(BuildContext context) {
     Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Wrap(children: <Widget>[
           Progresso(
-            mensagem: "Enviando transfência",
+            mensagem: 'Enviando transfência',
           ),
         ]),
       ),

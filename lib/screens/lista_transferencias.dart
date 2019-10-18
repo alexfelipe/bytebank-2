@@ -15,7 +15,8 @@ class ListaTransferencias extends StatefulWidget {
 }
 
 class _ListaTransferenciasState extends State<ListaTransferencias> {
-  final List<Transferencia> _transferencias = List();
+  List<Transferencia> _transferencias;
+  final TransferenciaWebClient _webClient = TransferenciaWebClient();
 
   @override
   void initState() {
@@ -24,30 +25,17 @@ class _ListaTransferenciasState extends State<ListaTransferencias> {
   }
 
   void buscaTodas() async {
-    final List<Transferencia> transferencias = List();
     try {
       final transferenciasEncontradas = await TransferenciaWebClient().todas();
-      transferencias.addAll(transferenciasEncontradas);
+      setState(() {
+        _transferencias = transferenciasEncontradas;
+      });
     } catch (e) {
       print(e);
+      setState(() {
+        _transferencias = List();
+      });
     }
-
-    setState(() {
-      if (transferencias.isNotEmpty) {
-        _transferencias.addAll(transferencias);
-      } else {
-        _transferencias.add(
-          Transferencia(
-            20.0,
-            Contato(
-              'alex',
-              1000,
-            ),
-            data: DateTime.now(),
-          ),
-        );
-      }
-    });
   }
 
   @override
@@ -60,13 +48,11 @@ class _ListaTransferenciasState extends State<ListaTransferencias> {
   }
 
   Widget _configuraWidget() {
-    if (_temTransferencia()) {
+    if (_transferencias != null) {
       return _Transferencias(_transferencias);
     }
     return Progresso();
   }
-
-  bool _temTransferencia() => _transferencias.isNotEmpty;
 }
 
 class _Transferencias extends StatelessWidget {
@@ -76,6 +62,26 @@ class _Transferencias extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return _configuraLista();
+  }
+
+  Widget _configuraLista() {
+    if (_transferencias.isEmpty) {
+      return Container(
+        width: double.maxFinite,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.money_off, size: 80,),
+            SizedBox(
+              height: 16.0,
+            ),
+            Text("Não há transferências", style: TextStyle(fontSize: 24.0),),
+          ],
+        ),
+      );
+    }
     return ListView.builder(
         itemCount: _transferencias.length,
         itemBuilder: (context, indice) {

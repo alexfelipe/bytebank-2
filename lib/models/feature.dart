@@ -17,22 +17,22 @@ class Feature {
 Map<int, Feature> todasFeatures = {
   1: Feature(
     CodigoFeature.transferir,
-    "Transferir",
+    'Transferir',
     Icons.monetization_on,
   ),
   2: Feature(
     CodigoFeature.historico,
-    "Histórico",
+    'Histórico',
     Icons.description,
   ),
   3: Feature(
     CodigoFeature.cartaoDeCredito,
-    "Cartão de crédito",
+    'Cartão de crédito',
     Icons.credit_card,
   ),
   4: Feature(
     CodigoFeature.ajuda,
-    "Ajuda",
+    'Ajuda',
     Icons.help,
   ),
 };
