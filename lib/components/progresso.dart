@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
-const _mensagem = 'Carregando...';
-
 class Progresso extends StatelessWidget {
+  final String mensagem;
+
+  const Progresso({this.mensagem = "Carregando..."});
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -12,10 +14,10 @@ class Progresso extends StatelessWidget {
         children: <Widget>[
           CircularProgressIndicator(),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            padding: const EdgeInsets.only(top: 16.0),
             child: Text(
-              _mensagem,
-              style: TextStyle(fontSize: 24.0),
+              mensagem,
+              style: TextStyle(fontSize: 16.0),
             ),
           ),
         ],

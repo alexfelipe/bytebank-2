@@ -1,4 +1,5 @@
 import 'package:bytebank/components/avisa_dialog.dart';
+import 'package:bytebank/components/progresso.dart';
 import 'package:bytebank/components/solicita_senha_dialog.dart';
 import 'package:bytebank/models/contato.dart';
 import 'package:bytebank/models/transferencia.dart';
@@ -31,44 +32,46 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
       appBar: AppBar(
         title: Text(_tituloAppBar),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Text(
-                widget._contato.nome,
-                style: TextStyle(fontSize: 24.0),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(widget._contato.numeroConta.toString(),
-                    style: TextStyle(fontSize: 16.0)),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: TextField(
-                  keyboardType: TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  controller: _controlador,
+      body: Builder(
+        builder: (context) => Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Text(
+                  widget._contato.nome,
                   style: TextStyle(fontSize: 24.0),
-                  decoration: InputDecoration(labelText: _rotuloCampoValor),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: SizedBox(
-                  width: double.maxFinite,
-                  child: RaisedButton(
-                    child: Text(_tituloBotaoCriar),
-                    onPressed: () {
-                      _criaTransferencia(context);
-                    },
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(widget._contato.numeroConta.toString(),
+                      style: TextStyle(fontSize: 16.0)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: TextField(
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    controller: _controlador,
+                    style: TextStyle(fontSize: 24.0),
+                    decoration: InputDecoration(labelText: _rotuloCampoValor),
                   ),
                 ),
-              )
-            ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: SizedBox(
+                    width: double.maxFinite,
+                    child: RaisedButton(
+                      child: Text(_tituloBotaoCriar),
+                      onPressed: () {
+                        _criaTransferencia(context);
+                      },
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -80,7 +83,36 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
     final transferenciaCriada = Transferencia(valor, widget._contato);
     final String senha = await _solicitaSenha(context);
     if (senha != null) {
-      _salva(transferenciaCriada, senha);
+      _mostraProgresso(context);
+      try {
+        final TransacaoResposta resposta =
+            await _salva(transferenciaCriada, senha);
+        _mostraMensagemDeRetorno(resposta, context);
+      } catch (e) {
+        _mostraMensagem(
+          'Falha ao transferir!',
+          'Falha ao enviar a transferência para a API',
+        );
+      }
+      Scaffold.of(context).hideCurrentSnackBar();
+    }
+  }
+
+  Future _mostraMensagemDeRetorno(
+      TransacaoResposta resposta, BuildContext context) async {
+    if (resposta.sucesso) {
+      await _mostraMensagem(
+        'Transferência realizada!',
+        'Transferência recebida com sucesso!',
+        icone: Icons.done,
+      );
+      Navigator.of(context).pop();
+    } else {
+      _mostraMensagem(
+        'Falha ao transferir!',
+        resposta.mensagem,
+        icone: Icons.error_outline,
+      );
     }
   }
 
@@ -92,34 +124,17 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
         builder: (context) => SolicitaSenhaDialog(),
       );
 
-  void _salva(
+  Future<TransacaoResposta> _salva(
     Transferencia transferencia,
     String senha,
   ) async {
     try {
-      final TransacaoResposta resposta = await webClient.salva(
+      return webClient.salva(
         transferencia,
         senha,
       );
-      if (resposta.sucesso) {
-        await _mostraMensagem(
-          'Transferência realizada!',
-          'Transferência recebida com sucesso!',
-          icone: Icons.done,
-        );
-        Navigator.of(context).pop();
-      } else {
-        _mostraMensagem(
-          'Falha ao transferir!',
-          resposta.mensagem,
-          icone: Icons.error_outline,
-        );
-      }
     } catch (e) {
-      _mostraMensagem(
-        'Falha ao transferir!',
-        'Falha ao enviar transferência',
-      );
+      return null;
     }
   }
 
@@ -135,4 +150,16 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
                 mensagem: mensagem,
                 icone: icone,
               ));
+
+  void _mostraProgresso(BuildContext context) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Wrap(children: <Widget>[
+          Progresso(
+            mensagem: "Enviando transfência",
+          ),
+        ]),
+      ),
+    );
+  }
 }
