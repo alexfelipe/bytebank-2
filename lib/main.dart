@@ -1,3 +1,4 @@
+import 'package:bytebank/screens/lista_contatos.dart';
 import 'package:flutter/material.dart';
 import 'screens/dashboard.dart';
 
@@ -15,7 +16,26 @@ class ByteBankApp extends StatelessWidget {
           textTheme: ButtonTextTheme.primary,
         ),
       ),
-      home: Dashboard(),
+      home: BytebankNavegador.destinoInicial,
     );
   }
+}
+
+class BytebankNavegador {
+
+  static final Widget destinoInicial = Dashboard();
+
+  Future<void> vaiParaInicio(context) => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Dashboard(),
+        ),
+      );
+
+  Future<void> vaiParaListaContatos(context) => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ListaContatos(),
+        ),
+      );
 }

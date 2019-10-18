@@ -101,22 +101,26 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
 
   Future<void> _mostraMensagemDeRetorno(
       TransacaoResposta resposta, BuildContext context) async {
+    msg = toMensagem(resultadoCode)
+    await...
+    if(resultadoCode.isSucesso())
+      pop
     if (resposta.sucesso) {
       await _mostraMensagem(
-        'Transferência realizada!',
-        'Transferência recebida com sucesso!',
-        icone: Icons.done,
+        resposta.titulo, //'Transferência realizada!',
+        resposta.mensagem, 'Transferência recebida com sucesso!'
+        icone: resposta.icone //Icons.done,
       );
-      Navigator.of(context).pop();
+      //Navigator.of(context).pop();
     } else {
       _mostraMensagem(
-        'Falha ao transferir!',
+         resposta.titulo , //'Falha ao transferir!',
         resposta.mensagem,
-        icone: Icons.error_outline,
+        icone: resposta.icone //Icons.error_outline,
       );
     }
   }
-
+//todo foco auto
   Future<String> _solicitaSenha(
     BuildContext context,
   ) async =>

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'item.dart';
 
+//TODO refresh com scroll e
+//TODO formatacao de dinheiro
 class ListaFeatures extends StatefulWidget {
   final Function(Feature) featureClicada;
 
@@ -49,7 +51,9 @@ class _ListaFeaturesState extends State<ListaFeatures> {
     //TODO adicionei o try catch devido às exceptions, em relação os prints de exceptions, costumam usar o debugPrint/print ou tem outra abordagem?
     try {
       features.addAll(await FeatureWebClient().todas());
+      //todo da pra pegar erro específico?
     } catch (e) {
+      //TODO notificar falha
       print(e);
     }
 
@@ -65,8 +69,6 @@ class _ListaFeaturesState extends State<ListaFeatures> {
       _features.addAll(itemFeaturesDisponiveis);
     });
   }
-
-  //TODO Tem algum pattern para usar esse tipo de solução?
   ItemFeature _devolveItemFeature(Feature feature) {
     return ItemFeature(
       feature: feature,

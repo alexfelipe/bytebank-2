@@ -39,7 +39,7 @@ class TransferenciaWebClient {
     if (resposta.statusCode == 200 || resposta.statusCode == 409) {
       return TransacaoResposta(true);
     }
-    if (resposta.statusCode == 400 || resposta.statusCode == 401) {
+    if (mensagemDafalha comtains key resposta.stutusCode) {
       return TransacaoResposta(
         false,
         mensagem: _mensagensDeFalha[resposta.statusCode],
@@ -56,13 +56,20 @@ class TransferenciaWebClient {
 
   final Map<int, String> _mensagensDeFalha = {
     400: "Falha na requisição com a API",
-    401: "Falha na autenticação"
+    401: "Falha na autenticação",
+    409? `
   };
 }
 
+enum ReiltadoCode {
+  fjsdf,fsdjkhsdf,fsdhhsdfksd,jisfhsdf, erro_desconhecido
+}
+
 class TransacaoResposta {
+
   final String mensagem;
   final bool sucesso;
 
+  // mensagem obriatorio pq eh uma RESPOSTA
   TransacaoResposta(this.sucesso, {this.mensagem});
 }
