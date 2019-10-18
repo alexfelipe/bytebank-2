@@ -16,7 +16,7 @@ class Quadro extends StatelessWidget {
       child: Container(
         child: Image.asset(
           caminhoImagem,
-          fit: BoxFit.cover,
+          fit: BoxFit.fitHeight,
         ),
         height: altura,
         width: double.maxFinite,
