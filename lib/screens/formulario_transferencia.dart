@@ -1,7 +1,8 @@
+import 'package:bytebank/components/avisa_dialog.dart';
+import 'package:bytebank/components/solicita_senha_dialog.dart';
 import 'package:bytebank/models/contato.dart';
 import 'package:bytebank/models/transferencia.dart';
 import 'package:bytebank/webclient/transferencia_webclient.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 const _tituloAppBar = 'Nova transferência';
@@ -22,6 +23,7 @@ class FormularioTransferencia extends StatefulWidget {
 
 class _FormularioTransferenciaState extends State<FormularioTransferencia> {
   final TextEditingController _controlador = TextEditingController();
+  final webClient = TransferenciaWebClient();
 
   @override
   Widget build(BuildContext context) {
@@ -76,68 +78,61 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
   void _criaTransferencia(BuildContext context) async {
     final valor = double.tryParse(_controlador.text);
     final transferenciaCriada = Transferencia(valor, widget._contato);
-
-    TextEditingController controller = TextEditingController();
-
-    final String senha = await _solicitaSenha(context, controller);
-    _salva(transferenciaCriada, senha);
+    final String senha = await _solicitaSenha(context);
+    if (senha != null) {
+      _salva(transferenciaCriada, senha);
+    }
   }
 
   Future<String> _solicitaSenha(
     BuildContext context,
-    TextEditingController controlador,
   ) async =>
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Digite a senha'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TextField(
-                textAlign: TextAlign.center,
-                maxLength: 4,
-                keyboardType: TextInputType.number,
-                style: TextStyle(
-                  letterSpacing: 24.0,
-                  fontSize: 28.0,
-                ),
-                obscureText: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-                controller: controlador,
-              ),
-              RaisedButton(
-                child: Text('Confirmar'),
-                onPressed: () => Navigator.pop(context, controlador.text),
-              ),
-            ],
-          ),
-        ),
+        builder: (context) => SolicitaSenhaDialog(),
       );
 
-  void _salva(Transferencia transferencia, String senha) async {
-    final TransacaoResposta resposta = await TransferenciaWebClient().salva(
-      transferencia,
-      senha,
-    );
-    if (resposta.sucesso) {
-      Navigator.pop(context);
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Transação não realizada'),
-          content: Text(resposta.mensagem),
-          actions: <Widget>[
-            FlatButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Fechar'),
-            )
-          ],
-        ),
+  void _salva(
+    Transferencia transferencia,
+    String senha,
+  ) async {
+    try {
+      final TransacaoResposta resposta = await webClient.salva(
+        transferencia,
+        senha,
+      );
+      if (resposta.sucesso) {
+        await _mostraMensagem(
+          'Transferência realizada!',
+          'Transferência recebida com sucesso!',
+          icone: Icons.done,
+        );
+        Navigator.of(context).pop();
+      } else {
+        _mostraMensagem(
+          'Falha ao transferir!',
+          resposta.mensagem,
+          icone: Icons.error_outline,
+        );
+      }
+    } catch (e) {
+      _mostraMensagem(
+        'Falha ao transferir!',
+        'Falha ao enviar transferência',
       );
     }
   }
+
+  Future<void> _mostraMensagem(
+    String titulo,
+    String mensagem, {
+    IconData icone,
+  }) =>
+      showDialog(
+          context: context,
+          builder: (context) => AvisaDialog(
+                titulo: titulo,
+                mensagem: mensagem,
+                icone: icone,
+              ));
 }

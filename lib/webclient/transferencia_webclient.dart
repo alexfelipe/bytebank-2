@@ -23,8 +23,8 @@ class TransferenciaWebClient {
     throw Exception(_transferenciasNaoEncontradas);
   }
 
-  Future<TransacaoResposta> salva(
-      Transferencia transferencia, String senha) async {
+  Future<TransacaoResposta> salva(Transferencia transferencia,
+      String senha) async {
     Map<String, String> headers = _configuraSenhaNoHeader(senha);
     final Map<String, dynamic> json = transferencia.paraJson();
     final resposta = await http.post(
@@ -39,10 +39,13 @@ class TransferenciaWebClient {
     if (resposta.statusCode == 200 || resposta.statusCode == 409) {
       return TransacaoResposta(true);
     }
-    return TransacaoResposta(
-      false,
-      mensagem: _mensagensDeFalha[resposta.statusCode],
-    );
+    if (resposta.statusCode == 400 || resposta.statusCode == 401) {
+      return TransacaoResposta(
+        false,
+        mensagem: _mensagensDeFalha[resposta.statusCode],
+      );
+    }
+    throw Exception("Não foi possível salvar transferência");
   }
 
   Map<String, String> _configuraSenhaNoHeader(String senha) {
