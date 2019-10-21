@@ -19,6 +19,7 @@ class _SolicitaSenhaDialogState extends State<SolicitaSenhaDialog> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           TextField(
+            autofocus: true,
             textAlign: TextAlign.center,
             maxLength: 4,
             keyboardType: TextInputType.number,

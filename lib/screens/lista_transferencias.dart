@@ -1,5 +1,4 @@
 import 'package:bytebank/components/progresso.dart';
-import 'package:bytebank/models/contato.dart';
 import 'package:bytebank/models/transferencia.dart';
 import 'package:bytebank/webclient/transferencia_webclient.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import 'package:intl/intl.dart';
 
 const _tituloAppBar = 'Histórico';
 
+//TODO refresh com scroll e
 class ListaTransferencias extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -26,7 +26,7 @@ class _ListaTransferenciasState extends State<ListaTransferencias> {
 
   void buscaTodas() async {
     try {
-      final transferenciasEncontradas = await TransferenciaWebClient().todas();
+      final transferenciasEncontradas = await _webClient.todas();
       setState(() {
         _transferencias = transferenciasEncontradas;
       });
@@ -73,11 +73,17 @@ class _Transferencias extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.money_off, size: 80,),
+            Icon(
+              Icons.money_off,
+              size: 80,
+            ),
             SizedBox(
               height: 16.0,
             ),
-            Text("Não há transferências", style: TextStyle(fontSize: 24.0),),
+            Text(
+              "Não há transferências",
+              style: TextStyle(fontSize: 24.0),
+            ),
           ],
         ),
       );
@@ -101,7 +107,7 @@ class _ItemTransferencia extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: Icon(Icons.monetization_on),
-        title: Text(_transferencia.valor.toString()),
+        title: Text(_formataParaMoedaBrasileira(_transferencia.valor)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -113,7 +119,9 @@ class _ItemTransferencia extends StatelessWidget {
     );
   }
 
-  String _formataParaDataHoraBrasileira(DateTime dataHora) {
-    return new DateFormat('dd/MM/yy hh:mm').format(dataHora);
-  }
+  String _formataParaMoedaBrasileira(double valor) =>
+      NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(valor);
+
+  String _formataParaDataHoraBrasileira(DateTime dataHora) =>
+      DateFormat('dd/MM/yy hh:mm').format(dataHora);
 }

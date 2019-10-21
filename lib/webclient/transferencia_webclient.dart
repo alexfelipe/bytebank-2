@@ -23,8 +23,8 @@ class TransferenciaWebClient {
     throw Exception(_transferenciasNaoEncontradas);
   }
 
-  Future<TransacaoResposta> salva(Transferencia transferencia,
-      String senha) async {
+  Future<TransacaoResposta> salva(
+      Transferencia transferencia, String senha) async {
     Map<String, String> headers = _configuraSenhaNoHeader(senha);
     final Map<String, dynamic> json = transferencia.paraJson();
     final resposta = await http.post(
@@ -36,14 +36,8 @@ class TransferenciaWebClient {
   }
 
   Future<TransacaoResposta> validaResposta(http.Response resposta) async {
-    if (resposta.statusCode == 200 || resposta.statusCode == 409) {
-      return TransacaoResposta(true);
-    }
-    if (mensagemDafalha comtains key resposta.stutusCode) {
-      return TransacaoResposta(
-        false,
-        mensagem: _mensagensDeFalha[resposta.statusCode],
-      );
+    if (_codigos.containsKey(resposta.statusCode)) {
+      return _codigos[resposta.statusCode];
     }
     throw Exception("Não foi possível salvar transferência");
   }
@@ -54,22 +48,20 @@ class TransferenciaWebClient {
     return headers;
   }
 
-  final Map<int, String> _mensagensDeFalha = {
-    400: "Falha na requisição com a API",
-    401: "Falha na autenticação",
-    409? `
+  final Map<int, TransacaoResposta> _codigos = {
+    400: TransacaoResposta.falhaRequisicao,
+    401: TransacaoResposta.falhaAutenticacao,
+    409: TransacaoResposta.duplicada,
+    200: TransacaoResposta.sucesso,
+    500: TransacaoResposta.erro,
   };
 }
 
-enum ReiltadoCode {
-  fjsdf,fsdjkhsdf,fsdhhsdfksd,jisfhsdf, erro_desconhecido
-}
-
-class TransacaoResposta {
-
-  final String mensagem;
-  final bool sucesso;
-
-  // mensagem obriatorio pq eh uma RESPOSTA
-  TransacaoResposta(this.sucesso, {this.mensagem});
+enum TransacaoResposta {
+  sucesso,
+  falhaAutenticacao,
+  falhaRequisicao,
+  duplicada,
+  erro,
+  desconhecido,
 }

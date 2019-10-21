@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'item.dart';
 
-//TODO refresh com scroll e
-//TODO formatacao de dinheiro
 class ListaFeatures extends StatefulWidget {
   final Function(Feature) featureClicada;
 

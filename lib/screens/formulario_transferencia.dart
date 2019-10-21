@@ -91,8 +91,7 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
         _mostraMensagemDeRetorno(resposta, context);
       } catch (e) {
         _mostraMensagem(
-          'Falha ao transferir!',
-          'Falha ao enviar a transferência para a API',
+          _respostasDialog[TransacaoResposta.desconhecido],
         );
       }
       Scaffold.of(context).hideCurrentSnackBar();
@@ -101,26 +100,14 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
 
   Future<void> _mostraMensagemDeRetorno(
       TransacaoResposta resposta, BuildContext context) async {
-    msg = toMensagem(resultadoCode)
-    await...
-    if(resultadoCode.isSucesso())
-      pop
-    if (resposta.sucesso) {
-      await _mostraMensagem(
-        resposta.titulo, //'Transferência realizada!',
-        resposta.mensagem, 'Transferência recebida com sucesso!'
-        icone: resposta.icone //Icons.done,
-      );
-      //Navigator.of(context).pop();
-    } else {
-      _mostraMensagem(
-         resposta.titulo , //'Falha ao transferir!',
-        resposta.mensagem,
-        icone: resposta.icone //Icons.error_outline,
-      );
+    if (_respostasDialog.containsKey(resposta)) {
+      await _mostraMensagem(_respostasDialog[resposta]);
+      if (resposta == TransacaoResposta.sucesso) {
+        Navigator.of(context).pop();
+      }
     }
   }
-//todo foco auto
+
   Future<String> _solicitaSenha(
     BuildContext context,
   ) async =>
@@ -143,17 +130,12 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
     }
   }
 
-  Future<void> _mostraMensagem(
-    String titulo,
-    String mensagem, {
-    IconData icone,
-  }) =>
-      showDialog(
+  Future<void> _mostraMensagem(ConteudoDialog conteudo) => showDialog(
         context: context,
         builder: (context) => AvisaDialog(
-          titulo: titulo,
-          mensagem: mensagem,
-          icone: icone,
+          titulo: conteudo.titulo,
+          mensagem: conteudo.mensagem,
+          icone: conteudo.icone,
         ),
       );
 
@@ -168,4 +150,68 @@ class _FormularioTransferenciaState extends State<FormularioTransferencia> {
       ),
     );
   }
+}
+
+Map<TransacaoResposta, ConteudoDialog> _respostasDialog = {
+  TransacaoResposta.sucesso: ConteudoDialog(
+    'Transação sucedida!',
+    'Transferência realizada com sucesso',
+    Icons.done,
+  ),
+  TransacaoResposta.falhaAutenticacao: ConteudoDialog(
+    'Transação não realizada!',
+    'Senha inválida',
+    Icons.error_outline,
+  ),
+  TransacaoResposta.desconhecido: ConteudoDialog(
+    'Erro desconhecido',
+    'Contate a equipe de suporte',
+    Icons.error_outline,
+  ),
+  TransacaoResposta.duplicada: ConteudoDialog(
+    'Transação não realizada!',
+    'Transação já realizada',
+    Icons.error_outline,
+  ),
+  TransacaoResposta.falhaRequisicao: ConteudoDialog(
+    'Transação não realizada!',
+    'Falha no envio da transação',
+    Icons.error_outline,
+  )
+};
+
+class ConteudoTransacaoSucesso extends ConteudoDialog {
+  ConteudoTransacaoSucesso(
+    String mensagem, {
+    String titulo = 'Transação Sucessida!',
+    IconData icone = Icons.done,
+  }) : super(
+          titulo,
+          mensagem,
+          icone,
+        );
+}
+
+class ConteudoTransacaoFalha extends ConteudoDialog {
+  ConteudoTransacaoFalha(
+    String mensagem, {
+    String titulo = 'Transação não realizada!',
+    IconData icone = Icons.error_outline,
+  }) : super(
+          titulo,
+          mensagem,
+          icone,
+        );
+}
+
+class ConteudoDialog {
+  final String titulo;
+  final String mensagem;
+  final IconData icone;
+
+  ConteudoDialog(
+    this.titulo,
+    this.mensagem,
+    this.icone,
+  );
 }
