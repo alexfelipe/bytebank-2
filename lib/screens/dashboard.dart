@@ -16,11 +16,7 @@ class Dashboard extends StatelessWidget {
       appBar: AppBar(
         title: Text(_tituloAppBar),
       ),
-      /**TODO para manter o dashboard com o mesmo visual e
-       * com comportamentos de scroll tive que usar esse exemplo
-       * que peguei na página da documentação,
-       * é necessário realizar esse procedimento completo?
-       * */
+      //TODO para manter o dashboard com o mesmo visual e com comportamentos de scroll tive que usar esse exemplo que peguei na página da documentação, é necessário realizar esse procedimento completo?
       body: LayoutBuilder(builder: (context, viewportConstraints) {
         return SingleChildScrollView(
           child: ConstrainedBox(
