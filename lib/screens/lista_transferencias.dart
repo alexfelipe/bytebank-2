@@ -21,10 +21,10 @@ class _ListaTransferenciasState extends State<ListaTransferencias> {
   @override
   void initState() {
     super.initState();
-    buscaTodas();
+    _buscaTodas();
   }
 
-  void buscaTodas() async {
+  void _buscaTodas() async {
     try {
       final transferenciasEncontradas = await _webClient.todas();
       setState(() {
@@ -49,7 +49,29 @@ class _ListaTransferenciasState extends State<ListaTransferencias> {
 
   Widget _configuraWidget() {
     if (_transferencias != null) {
-      return _Transferencias(_transferencias);
+      if (_transferencias.isEmpty) {
+        //TODO como adicionar um RefreshIndicator em Widgets mantendo o visual do Center
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.money_off,
+                size: 80,
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              Text(
+                "Não há transferências",
+                style: TextStyle(fontSize: 24.0),
+              ),
+            ],
+          ),
+        );
+      }
+      return _Transferencias(_transferencias, () => _buscaTodas());
     }
     return Progresso();
   }
@@ -57,37 +79,22 @@ class _ListaTransferenciasState extends State<ListaTransferencias> {
 
 class _Transferencias extends StatelessWidget {
   final List<Transferencia> _transferencias;
+  final Function quandoAtualizaPorRolagem;
 
-  _Transferencias(this._transferencias);
+  _Transferencias(
+    this._transferencias,
+    this.quandoAtualizaPorRolagem,
+  );
 
   @override
   Widget build(BuildContext context) {
-    return _configuraLista();
+    return RefreshIndicator(
+      child: _configuraLista(),
+      onRefresh: () => quandoAtualizaPorRolagem(),
+    );
   }
 
   Widget _configuraLista() {
-    if (_transferencias.isEmpty) {
-      return Container(
-        width: double.maxFinite,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              Icons.money_off,
-              size: 80,
-            ),
-            SizedBox(
-              height: 16.0,
-            ),
-            Text(
-              "Não há transferências",
-              style: TextStyle(fontSize: 24.0),
-            ),
-          ],
-        ),
-      );
-    }
     return ListView.builder(
         itemCount: _transferencias.length,
         itemBuilder: (context, indice) {
